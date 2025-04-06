@@ -33,9 +33,9 @@ export default function Home() {
       <div className="bg-white h-1 opacity-10"></div>
 
       <div className="text-white container mx-auto pb-32 pt-14">
-        <h1 className="text-3xl font-bold text-center mb-14">
+        <h2 className="text-3xl font-bold text-center mb-14">
           Your Fans can buy you a Chai
-        </h1>
+        </h2>
         <div className="flex gap-5 justify-around">
           <div className="item space-y-3 flex flex-col items-center justify-center">
             <img
@@ -78,9 +78,9 @@ export default function Home() {
       <div className="bg-white h-1 opacity-10">
       </div>
       <div className="text-white container mx-auto pb-32 pt-14 flex flex-col items-center justify-center">
-        <h1 className="text-3xl font-bold text-center mb-14">
+        <h2 className="text-3xl font-bold text-center mb-14">
           Learn more about us
-        </h1>
+        </h2>
         {/* <div className="w-[90%] h-[40vh] md:w-[50%] md:h-[40vh] lg:w-[50%] lg:h-[40vh] xl:w-[50%] xl:h-[40vh]"> */}
         <iframe width="560" height="315" src="https://www.youtube.com/embed/Yi0u1bz6xiw?si=NJ-cutaCwiPlMA4P" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         {/* </div> */}

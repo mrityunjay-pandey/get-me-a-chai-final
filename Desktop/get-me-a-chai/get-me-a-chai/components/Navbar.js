@@ -14,10 +14,12 @@ const Navbar = () => {
   //   }
   return (
     <nav className="bg-gray-900 text-white flex justify-between items-center px-4 h-16">
-      <div className="logo font-bold text-lg flex justify-center items-center">
+
+        <Link className="logo font-bold text-lg flex justify-center items-center" href={"/"}>
         <img src="tea.gif" width={44} alt="" />
-        <span>GetMeaChai!</span>
-      </div>
+        <span>Get Me a Chai!</span>
+        </Link>
+
       {/* <ul className='flex justify-between gap-4'>
             <li>Home</li>
             <li>About</li>
@@ -28,7 +30,9 @@ const Navbar = () => {
       <div className="relative">
         {session && (
           <>
-            <button onClick={()=> setShowdropdown(!showdropdown)}
+            <button onClick={()=> setShowdropdown(!showdropdown)} onBlur={()=>{setTimeout(()=>{
+                setShowdropdown(false)
+            },100);}}
               id="dropdownDefaultButton"
               data-dropdown-toggle="dropdown"
               className="text-white mx-4 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
@@ -73,17 +77,10 @@ const Navbar = () => {
                     href="#"
                     className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                   >
-                    Settings
+                   Your Page
                   </Link>
                 </li>
-                <li>
-                  <Link
-                    href="#"
-                    className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                  >
-                    Earnings
-                  </Link>
-                </li>
+                
                 <li>
                   <Link onClick={()=>signOut()}
                     href="#"

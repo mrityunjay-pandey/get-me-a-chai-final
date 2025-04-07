@@ -2,9 +2,13 @@
 import React, {useState} from "react";
 import Script from "next/script";
 import {initiate} from '@/actions/useractions'
+import { useSession } from "next-auth/react";
+
 
 
 const PaymentPage = ({ username }) => {
+  // const { data: session } = useSession();
+  
 const [paymentform, setPaymentform] = useState({})
 
 const handleChange = (e) => {
@@ -14,7 +18,7 @@ const handleChange = (e) => {
 
   const pay = async (amount) => {
 
-    let a = await initiate(amount, session?.user.name, paymentform)
+    let a = await initiate(amount, username, paymentform)
     let ordeId = a.id
     var options = {
       "key": process.env.KEY_ID, // Replace with your Razorpay key_id
@@ -98,19 +102,19 @@ const handleChange = (e) => {
             <h2 className="text-2xl font-bold my-5">Make a Payment</h2>
             <div className="flex gap-2 flex-col">
               <div>
-                <input onChange={handleChange} value = {paymentform.name}
+                <input onChange={handleChange} name='name' value = {paymentform.name}
                   type="text"
                   className="w-full p-3 rounded-lg bg-slate-800"
                   placeholder="Enter Name"
                 />
               </div>
-              <input onChange={handleChange} value = {paymentform.message}
+              <input onChange={handleChange} name='message' value = {paymentform.message}
                 type="text"
                 className="w-full p-3 rounded-lg bg-slate-800"
                 placeholder="Enter Message"
               />
 
-              <input onChange={handleChange} value = {paymentform.amount}
+              <input onChange={handleChange} name='amount' value = {paymentform.amount}
                 type="text"
                 className="w-full p-3 rounded-lg bg-slate-800"
                 placeholder="Enter Amount"
@@ -125,9 +129,9 @@ const handleChange = (e) => {
             </div>
             {/* Or choose from these amounts */}
             <div className="flex gap-2 mt-5">
-              <button className="bg-slate-800 p-3 rounded-lg" onClick={()=> pay(10)}>Pay ₹10</button>
-              <button className="bg-slate-800 p-3 rounded-lg" onClick={()=> pay(20)}>Pay ₹20</button>
-              <button className="bg-slate-800 p-3 rounded-lg" onClick={()=> pay(30)}>Pay ₹30</button>
+              <button className="bg-slate-800 p-3 rounded-lg" onClick={()=> pay(1000)}>Pay ₹10</button>
+              <button className="bg-slate-800 p-3 rounded-lg" onClick={()=> pay(2000)}>Pay ₹20</button>
+              <button className="bg-slate-800 p-3 rounded-lg" onClick={()=> pay(3000)}>Pay ₹30</button>
             </div>
           </div>
         </div>

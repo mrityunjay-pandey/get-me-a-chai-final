@@ -8,7 +8,7 @@ import { useSession } from "next-auth/react";
 
 const PaymentPage = ({ username }) => {
   // const { data: session } = useSession();
-  
+
 const [paymentform, setPaymentform] = useState({})
 
 const handleChange = (e) => {
@@ -19,16 +19,16 @@ const handleChange = (e) => {
   const pay = async (amount) => {
 
     let a = await initiate(amount, username, paymentform)
-    let ordeId = a.id
+    let orderId = a.id
     var options = {
-      "key": process.env.KEY_ID, // Replace with your Razorpay key_id
+      "key": process.env.NEXT_PUBLIC_KEY_ID, // Replace with your Razorpay key_id
       "amount": amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
       "currency": "INR",
       "name": "Get Me A Chai",
       "description": "Test Transaction",
       "image": "https://example.com/your_logo",
       "order_id": orderId, // This is the order_id created in the backend
-      "callback_url": `${process.env.URL}/api/razorpay`, // Your success URL
+      "callback_url": `${process.env.NEXT_PUBLIC_URL}/api/razorpay`, // Your success URL
       "prefill": {
         "name": "Gaurav Kumar",
         "email": "gaurav.kumar@example.com",

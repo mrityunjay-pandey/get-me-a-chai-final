@@ -2,18 +2,24 @@
 import React from 'react'
 import { useSession, signIn, signOut } from "next-auth/react"
 import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 
 const Login = () => {
     const {data: session} = useSession()
+    const router = useRouter()
+
+    useEffect(() => {
+        document.title = "Login - Get Me A Chai"
 
     if(session) {
-      const router = useRouter()
+    //   const router = useRouter()
       router.push('/dashboard')
     }
+}, [router, session])
   return (
     <div className='text-white py-14 container mx-auto'>
         <h1 className='font-bold text-3xl text-center'>
-            Login to Get your fans to support you
+            Login to Get started
         </h1>
         <div className="flex flex-col gap-2 min-h-screen items-center p-10">
 
@@ -23,7 +29,7 @@ const Login = () => {
     <svg className="h-6 w-6 mr-2" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"
         viewBox="-0.5 0 48 48" version="1.1">
 
-        <g id="Icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Icons" stroke="none" strokeWidth="1" fill="none" fill-rule="evenodd">
             <g id="Color-" transform="translate(-401.000000, -860.000000)">
                 <g id="Google" transform="translate(401.000000, 860.000000)">
                     <path
@@ -152,3 +158,5 @@ const Login = () => {
 }
 
 export default Login
+
+

@@ -5,13 +5,18 @@ import Payment from "@/models/Payment";
 import connectDB from "@/app/db/connectDb";
 import User from "@/models/User";
 
+
 export const initiate = async (amount, to_username, paymentform) => {
   await connectDB();
 
+    // fetch the secret of the user who is getting the payment
+    let user = await User.findOne({username: to_username})
+    const secret = user.razorpaysecret
+
   var instance = new Razorpay({
-    key_id: process.env.NEXT_PUBLIC_KEY_ID,
-    key_secret: process.env.KEY_SECRET,
-  });
+    key_id: user.razorpayid,
+    key_secret: secret,
+  });  
 
   instance.orders.create({
     amount: 50000,
@@ -45,7 +50,13 @@ export const initiate = async (amount, to_username, paymentform) => {
 export const fetchuser = async (username) => {
   await connectDB();
   console.log(username);
+
   let u = await User.findOne({ username: username });
+
+  // if(!u){
+  //   throw new Error(`User not found with username: ${username}`);
+  // }
+
   let user = u.toObject();
   
    // Convert ObjectId and Date fields to string
@@ -60,7 +71,8 @@ export const fetchpayments = async (username) => {
   await connectDB();
   // find all payments sorted by decreasing order of amount
 
-  let p = await Payment.find({ to_user: username,done:true }).sort({ amount: -1 }).lean();
+  let p = await Payment.find({ to_user: username,done:true }).sort({ amount: -1 }).limit(10).lean();
+  
 
 
     // Serialize ObjectId and Date fields to make them client-safe
@@ -77,11 +89,19 @@ export const fetchpayments = async (username) => {
 export const updateProfile = async (data, oldusername) => {
   await connectDB();
   let ndata = Object.fromEntries(data);
+
+  // If the username is being updated, check if username is available
   if (oldusername !== ndata.username) {
     let u = await User.findOne({ username: ndata.username });
     if (u) {
       return { error: "Username already exists" };
     }
+    await User.updateOne({ email: ndata.email }, ndata);
+
+    // Now update all the username in the Payments table
+    await Payment.updateMany({to_user: oldusername}, {to_user: ndata.username})
+  }else{
+
+      await User.updateOne({ email: ndata.email }, ndata);
   }
-  await User.updateOne({ email: ndata.email }, ndata);
 };

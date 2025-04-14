@@ -5,7 +5,6 @@ const connectDB = async () => {
         const conn = await mongoose.connect(`mongodb://localhost:27017/chai`,{
             useNewUrlParser: true,
         });
-        console.log(`MongoDB connected: {conn.connection.host}`);
     }catch(error){
         console.error(error.message);
         process.exit(1);

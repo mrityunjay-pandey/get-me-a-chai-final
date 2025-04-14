@@ -1,19 +1,37 @@
 "use client";
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import Script from "next/script";
-import {initiate} from '@/actions/useractions'
 import { useSession } from "next-auth/react";
-
+import {fetchuser, fetchpayments, initiate} from '@/actions/useractions'
+// import { useEffect } from "react";
 
 
 const PaymentPage = ({ username }) => {
   // const { data: session } = useSession();
 
-const [paymentform, setPaymentform] = useState({})
+const [paymentform, setPaymentform] = useState({
+  name: "",
+  message: "",
+  amount: ""
+})
+const [currentUser, setcurrentUser] = useState({})
+const [payments, setPayments] = useState([])
+
+useEffect(() => {
+  getData()
+}, [])
 
 const handleChange = (e) => {
     setPaymentform({...paymentform, [e.target.name]: e.target.value })
 }
+
+  const getData = async () => {
+    let u = await fetchuser(username)
+    setcurrentUser(u)
+    let dbpayments = await fetchpayments(username)
+    setPayments(dbpayments)
+    console.log(u,dbpayments)
+  }
 
 
   const pay = async (amount) => {
@@ -21,7 +39,7 @@ const handleChange = (e) => {
     let a = await initiate(amount, username, paymentform)
     let orderId = a.id
     var options = {
-      "key": process.env.NEXT_PUBLIC_KEY_ID, // Replace with your Razorpay key_id
+      "key": currentUser.razorpayid, // Replace with your Razorpay key_id
       "amount": amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
       "currency": "INR",
       "name": "Get Me A Chai",
@@ -47,18 +65,19 @@ const handleChange = (e) => {
   };
   return (
     <>
+    
       <Script src="https://checkout.razorpay.com/v1/checkout.js"></Script>
 
       <div className="cover w-full bg-red-50 relative">
         <img
-          className="object-cover w-full h-[350px]"
-          src="https://c10.patreonusercontent.com/4/patreon-media/p/campaign/4842667/452146dcfeb04f38853368f554aadde1/eyJ3Ijo5NjAsIndlIjoxfQ%3D%3D/18.gif?token-time=1746316800&token-hash=mtEjEoUrMjLoTfRsiSzyYAKUqdQsqjk2p2rfIENPlrg%3D"
+          className="object-cover w-full h-[350px] shadow-blue-700 shadow-sm"
+          src={currentUser.coverpic}
           alt=""
         />
         <div className="absolute -bottom-20 right-[46%] border-white border-2 rounded-full overflow-hidden w-[150px] h-[150px]">
           <img
             className="rounded-full object-cover w-[150px] h-[150px]"
-            src="https://i.natgeofe.com/n/548467d8-c5f1-4551-9f58-6817a8d2c45e/NationalGeographic_2572187.jpg?w=1436&h=958"
+            src={currentUser.profilepic}
             alt=""
           />
         </div>
@@ -74,27 +93,20 @@ const handleChange = (e) => {
           <div className="supporters w-1/2 bg-slate-900 text-white rounded-lg  p-10">
             <h2 className="text-2xl font-bold">Supporters</h2>
             <ul className="mx-5 text-lg">
-              <li className="my-4 flex gap-2 items-center">
-                <img width={33} src="avatar.gif" alt="user avatar" />
-                <span>
-                  Shubham donated <span className="font-bold">$30</span> with a
-                  message " I support you bro. Lots of ❤️"
-                </span>
-              </li>
-              <li className="my-4 flex gap-2 items-center">
-                <img width={33} src="avatar.gif" alt="user avatar" />
-                <span>
-                  Shubham donated <span className="font-bold">$30</span> with a
-                  message " I support you bro. Lots of ❤️"
-                </span>
-              </li>
-              <li className="my-4 flex gap-2 items-center">
-                <img width={33} src="avatar.gif" alt="user avatar" />
-                <span>
-                  Shubham donated <span className="font-bold">$30</span> with a
-                  message " I support you bro. Lots of ❤️"
-                </span>
-              </li>
+              {payments.length == 0 && <li>No payments yet</li>}
+              {payments.map((p,i) => {
+              return (
+               <li key = {p._id || i} className="my-4 flex gap-2 items-center">
+              <img width={33} src="avatar.gif" alt="user avatar" />
+              <span>
+                {p.name} donated <span className="font-bold">₹{p.amount}</span> with a
+                message "{p.message}"
+              </span>
+            </li>
+            );
+              
+})}
+              
             </ul>
           </div>
 
@@ -120,9 +132,9 @@ const handleChange = (e) => {
                 placeholder="Enter Amount"
               />
 
-              <button
+              <button onClick={()=> pay(Number.parseInt(paymentform.amount)*100)}
                 type="button"
-                className="w-full text-white bg-gradient-to-br from-purple-600 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+                className="w-full text-white bg-gradient-to-br from-purple-600 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 disabled:bg-slate-600 disabled:from-purple-100" disabled={paymentform.name?.length<3 || paymentform.message?.length<4}
               >
                 Pay
               </button>
